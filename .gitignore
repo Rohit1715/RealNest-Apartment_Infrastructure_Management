@@ -1,0 +1,23 @@
+Ignore IDE-specific files (Eclipse)
+.classpath
+.project
+.settings/
+.wtpmodules/
+*.tmp
+*.bak
+*.swp
+*~
+
+Ignore build output and compiled classes
+/build/
+/target/
+/bin/
+
+DEFINITIVE SECURITY RULE:
+Ignore the file containing our secret email credentials.
+This file should NEVER be committed to version control.
+/src/main/resources/mail.properties
+
+Ignore server logs and temporary files
+*.log
+.DS_Store
