@@ -2,7 +2,7 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
+-- Host: 1227.0.0.1
 -- Generation Time: Sep 24, 2025 at 03:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
@@ -16,14 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `apartment_db`
---
-CREATE DATABASE IF NOT EXISTS `apartment_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `apartment_db`;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
@@ -50,7 +42,7 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `first_name`, `
 (4, 'admin', '123456', 'rohhh3555@gmail.com', 'Praveen', 'C', '9988774455', 'ADMIN', '2025-08-13 06:52:31'),
 (5, 'owner', '123456', 'channabasayyahuddar@gmail.com', 'ROHIT', 'Teguramath', '98451025', 'OWNER', '2025-08-13 07:26:18'),
 (6, 'security', '123456', '01fe23mca026@kletech.ac.in', 'Tejesh', 'M', '7022263789', 'SECURITY', '2025-08-16 05:12:49'),
-(7, 'tenant2', 'Rohhh@1715', 'tenant@gmail.com', 'tenant ', '2', '9988774455', 'TENANT', '2025-09-01 06:18:35'),
+(7, 'tenant2', 'Rohhh@1715', 'tenant@gmail.com', 'tenant', '2', '9988774455', 'TENANT', '2025-09-01 06:18:35'),
 (8, 'pooja', 'Pooja@15', 'pooja@gmail.com', 'pooja', 'G', '9988774455', 'TENANT', '2025-09-10 15:42:01'),
 (11, 'Sumant', 'Sumant@123', 'sumantkulkarni1029@gmail.com', 'Sumant', 'Kulkarni', '7022263758', 'TENANT', '2025-09-19 14:13:34'),
 (12, 'Tenant', 'Tenant@1234', 'rohitbt1715@gmail.com', 'john', 'Fernandes', '9845705578', 'TENANT', '2025-09-20 16:43:33');
@@ -165,13 +157,13 @@ CREATE TABLE `complaints` (
 --
 
 INSERT INTO `complaints` (`complaint_id`, `resident_id`, `issue_type`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(7, 8, 'Security', 'no security at 3 pm ', 'In Progress', '2025-09-14 15:07:24', '2025-09-14 15:08:36'),
-(8, 8, 'Maintenance', 'not cleaning the room ', 'Open', '2025-09-17 15:06:47', '2025-09-17 15:06:47'),
-(10, 8, 'Maintenance', 'nothing has done ', 'In Progress', '2025-09-18 13:28:55', '2025-09-18 14:06:54'),
-(11, 8, 'Other', 'nothing ', 'Resolved', '2025-09-18 13:58:31', '2025-09-18 14:01:32'),
-(12, 8, 'Noise', 'Lot of noise due to neighbors party ', 'In Progress', '2025-09-19 13:37:39', '2025-09-19 13:46:49'),
-(14, 12, 'Maintenance', 'No electricity in my house ', 'Resolved', '2025-09-21 16:32:59', '2025-09-21 16:37:52'),
-(15, 12, 'Maintenance', 'water leakage ', 'In Progress', '2025-09-22 05:40:19', '2025-09-22 05:45:11');
+(7, 8, 'Security', 'no security at 3 pm', 'In Progress', '2025-09-14 15:07:24', '2025-09-14 15:08:36'),
+(8, 8, 'Maintenance', 'not cleaning the room', 'Open', '2025-09-17 15:06:47', '2025-09-17 15:06:47'),
+(10, 8, 'Maintenance', 'nothing has done', 'In Progress', '2025-09-18 13:28:55', '2025-09-18 14:06:54'),
+(11, 8, 'Other', 'nothing', 'Resolved', '2025-09-18 13:58:31', '2025-09-18 14:01:32'),
+(12, 8, 'Noise', 'Lot of noise due to neighbors party', 'In Progress', '2025-09-19 13:37:39', '2025-09-19 13:46:49'),
+(14, 12, 'Maintenance', 'No electricity in my house', 'Resolved', '2025-09-21 16:32:59', '2025-09-21 16:37:52'),
+(15, 12, 'Maintenance', 'water leakage', 'In Progress', '2025-09-22 05:40:19', '2025-09-22 05:45:11');
 
 -- --------------------------------------------------------
 
