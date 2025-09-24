@@ -1,35 +1,45 @@
-    package com.apartment.util;
+package com.apartment.util;
 
-    import java.sql.Connection;
-    import java.sql.DriverManager;
-    import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-    /**
-     * This utility class handles the database connection.
-     * It ensures we don't have to write the connection logic in every DAO class.
-     */
-    public class DatabaseUtil {
+public class DatabaseUtil {
 
-        // --- IMPORTANT: UPDATE THESE VALUES ---
-        private static final String JDBC_URL = "jdbc:mysql://localhost:3306/apartment_db?useSSL=false&serverTimezone=UTC";
-        private static final String JDBC_USERNAME = "root"; // Your MySQL username
-        private static final String JDBC_PASSWORD = ""; // Your MySQL password
+    // --- Local Development Credentials ---
+    private static final String LOCAL_JDBC_URL = "jdbc:mysql://localhost:3306/apartment_db";
+    private static final String LOCAL_DB_USER = "root"; // <-- Update with your local username
+    private static final String LOCAL_DB_PASSWORD = ""; // <-- Update with your local password
 
-        public static Connection getConnection() {
-            Connection connection = null;
-            try {
-                // Register the MySQL JDBC driver
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                // Attempt to get a connection
-                connection = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD);
-            } catch (ClassNotFoundException e) {
-                System.err.println("MySQL JDBC Driver not found.");
-                e.printStackTrace();
-            } catch (SQLException e) {
-                System.err.println("Connection Failed! Check output console");
-                e.printStackTrace();
+    public static Connection getConnection() throws SQLException {
+        Connection connection = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // --- DEPLOYMENT LOGIC FOR RENDER ---
+            // These names match what Render and TiDB provide.
+            String dbHost = System.getenv("DB_HOST");
+            String dbPort = System.getenv("DB_PORT");
+            String dbUser = System.getenv("DB_USER");
+            String dbPassword = System.getenv("DB_PASS");
+            String dbName = System.getenv("DB_NAME");
+
+            if (dbHost != null && dbUser != null && dbPassword != null && dbName != null) {
+                // If live credentials are found, construct the TiDB URL and use them.
+                System.out.println("Connecting to live TiDB database...");
+                // The ?useSSL=true is required for TiDB Cloud
+                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=true";
+                connection = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
+            } else {
+                // If not, fall back to the local credentials.
+                System.out.println("Connecting to local database...");
+                connection = DriverManager.getConnection(LOCAL_JDBC_URL, LOCAL_DB_USER, LOCAL_DB_PASSWORD);
             }
-            return connection;
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to connect to the database.", e);
         }
+        return connection;
     }
-    
+}
+
