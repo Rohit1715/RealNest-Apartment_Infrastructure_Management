@@ -51,20 +51,18 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute("pageName", "dashboard");
 
         try {
-            if ("TENANT".equals(role)) {
-                // DEFINITIVE FIX: Reverted to SESSION scope to restore summary cards
+            // --- FINAL FIX: Add .trim() to the role check for robustness ---
+            if ("TENANT".equals(role.trim())) {
                 session.setAttribute("rentDues", paymentDAO.getTenantOutstandingBalance(user.getUserId()));
                 session.setAttribute("openComplaints", complaintDAO.getOpenComplaintCountForTenant(user.getUserId()));
                 session.setAttribute("recentNotices", noticeDAO.getRecentNoticeCount());
 
-            } else if ("OWNER".equals(role)) {
-                // DEFINITIVE FIX: Reverted to SESSION scope to restore summary cards
+            } else if ("OWNER".equals(role.trim())) {
                 session.setAttribute("totalTenants", userDAO.getTotalTenantsByOwner(user.getUserId()));
                 session.setAttribute("unpaidRents", paymentDAO.getUnpaidRentCountForOwner(user.getUserId()));
                 session.setAttribute("openComplaints", complaintDAO.getOpenComplaintCountForOwner(user.getUserId()));
 
-            } else if ("ADMIN".equals(role)) {
-                // Admin data is correctly in the session scope
+            } else if ("ADMIN".equals(role.trim())) {
                 session.setAttribute("totalProperties", apartmentDAO.getTotalApartmentCount());
                 session.setAttribute("pendingComplaints", complaintDAO.getOpenComplaintCount());
                 session.setAttribute("monthlyRevenue", paymentDAO.getTotalRevenueThisMonth());
@@ -80,8 +78,7 @@ public class DashboardServlet extends HttpServlet {
                 request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
                 return; // Exit after forwarding for admin
                 
-            } else if ("SECURITY".equals(role)) {
-                // --- MODIFICATION: Added the missing SECURITY role case to redirect correctly. ---
+            } else if ("SECURITY".equals(role.trim())) {
                 // The security dashboard is the visitor log page.
                 request.getRequestDispatcher("visitor-log.jsp").forward(request, response);
                 return; // Exit after forwarding for security
