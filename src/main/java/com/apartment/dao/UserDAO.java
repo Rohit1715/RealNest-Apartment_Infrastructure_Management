@@ -12,8 +12,6 @@ import com.apartment.util.DatabaseUtil;
 
 public class UserDAO {
 
-    // --- YOUR ORIGINAL CODE IS UNCHANGED, ONLY LOGGING IS ADDED TO validateUser ---
-
     public boolean updateUserProfile(User user) throws SQLException {
         String CHECK_EMAIL_SQL = "SELECT user_id FROM users WHERE email = ? AND user_id != ?";
         try (Connection connection = DatabaseUtil.getConnection();
@@ -164,27 +162,26 @@ public class UserDAO {
 
     public User validateUser(String identifier, String password) {
         User user = null;
-        String SELECT_USER_SQL = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
+        // --- MODIFICATION: Added TRIM() to the SQL query to handle whitespace issues from the database. ---
+        String SELECT_USER_SQL = "SELECT * FROM users WHERE (TRIM(username) = ? OR TRIM(email) = ?) AND password = ?";
         
-        // --- NEW DIAGNOSTIC LOGGING ---
         System.out.println("Executing UserDAO.validateUser...");
         
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_SQL)) {
-            preparedStatement.setString(1, identifier);
-            preparedStatement.setString(2, identifier);
+            
+            // --- MODIFICATION: Trim the user's input as well for a robust comparison. ---
+            preparedStatement.setString(1, identifier.trim());
+            preparedStatement.setString(2, identifier.trim());
             preparedStatement.setString(3, password);
 
-            // --- NEW DIAGNOSTIC LOGGING ---
-            System.out.println("Executing query: " + preparedStatement.toString());
+            System.out.println("Executing query: " + preparedStatement.toString().split(": ")[1]);
 
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                // --- NEW DIAGNOSTIC LOGGING ---
                 System.out.println("Query returned a result. User found.");
                 user = mapResultSetToUser(rs);
             } else {
-                // --- NEW DIAGNOSTIC LOGGING ---
                 System.out.println("Query returned NO result. User not found.");
             }
         } catch (SQLException e) {

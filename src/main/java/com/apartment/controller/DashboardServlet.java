@@ -79,6 +79,12 @@ public class DashboardServlet extends HttpServlet {
                 
                 request.getRequestDispatcher("admin-dashboard.jsp").forward(request, response);
                 return; // Exit after forwarding for admin
+                
+            } else if ("SECURITY".equals(role)) {
+                // --- MODIFICATION: Added the missing SECURITY role case to redirect correctly. ---
+                // The security dashboard is the visitor log page.
+                request.getRequestDispatcher("visitor-log.jsp").forward(request, response);
+                return; // Exit after forwarding for security
             }
 
         } catch (Exception e) {
