@@ -57,37 +57,16 @@ public class TenantServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // --- New Search and Pagination Logic ---
-        String searchTerm = request.getParameter("search");
-        String pageStr = request.getParameter("page");
         
-        int currentPage = 1;
-        if (pageStr != null && !pageStr.isEmpty()) {
-            try {
-                currentPage = Integer.parseInt(pageStr);
-            } catch (NumberFormatException e) {
-                currentPage = 1;
-            }
-        }
-
-        int pageSize = 10; // Number of tenants per page
-
-        // Fetch paginated list of tenants for the main display
-        List<User> tenantList = tenantDAO.searchAndPaginateTenants(searchTerm, currentPage, pageSize);
-        int totalTenants = tenantDAO.getTenantCount(searchTerm);
-        int totalPages = (int) Math.ceil((double) totalTenants / pageSize);
-
-        // --- Data for the dropdowns in the form ---
-        List<User> allTenants = userDAO.getAllTenants();
+        // Get all tenants (users with role TENANT)
+        List<User> tenantList = userDAO.getAllTenants();
+        
+        // Get all apartments that do not have a tenant
         List<Apartment> availableApartments = apartmentDAO.getApartmentsWithoutTenant();
         
-        // Set all attributes for the JSP page
-        request.setAttribute("tenantList", tenantList); // The paginated list for display
-        request.setAttribute("allTenants", allTenants); // The complete list for the form
+        // Set attributes for the JSP
+        request.setAttribute("tenantList", tenantList);
         request.setAttribute("availableApartments", availableApartments);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("currentPage", currentPage);
-        request.setAttribute("search", searchTerm);
         
         request.getRequestDispatcher("manage-tenants.jsp").forward(request, response);
     }
