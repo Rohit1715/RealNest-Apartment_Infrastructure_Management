@@ -17,7 +17,6 @@ public class DatabaseUtil {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             // --- DEPLOYMENT LOGIC FOR RENDER ---
-            // These names match what Render and TiDB provide.
             String dbHost = System.getenv("DB_HOST");
             String dbPort = System.getenv("DB_PORT");
             String dbUser = System.getenv("DB_USER");
@@ -27,8 +26,11 @@ public class DatabaseUtil {
             if (dbHost != null && dbUser != null && dbPassword != null && dbName != null) {
                 // If live credentials are found, construct the TiDB URL and use them.
                 System.out.println("Connecting to live TiDB database...");
-                // The ?useSSL=true is required for TiDB Cloud
-                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=true";
+                
+                // --- MODIFIED LINE: Added useSSL=false and allowPublicKeyRetrieval=true ---
+                // This is often required for cloud database platforms when not using an SSL certificate.
+                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&allowPublicKeyRetrieval=true";
+                
                 connection = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
             } else {
                 // If not, fall back to the local credentials.
@@ -42,4 +44,3 @@ public class DatabaseUtil {
         return connection;
     }
 }
-
