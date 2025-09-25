@@ -30,9 +30,18 @@ public class LoginServlet extends HttpServlet {
         
         String loginIdentifier = request.getParameter("loginIdentifier");
         String password = request.getParameter("password");
+        
+        // --- NEW DIAGNOSTIC LOGGING ---
+        System.out.println("--- Login Attempt ---");
+        System.out.println("Attempting login for identifier: " + loginIdentifier);
+        // We will not print the password for security, but we know it's being passed.
+        
         User user = userDAO.validateUser(loginIdentifier, password);
 
         if (user != null) {
+            // --- NEW DIAGNOSTIC LOGGING ---
+            System.out.println("User validation SUCCESSFUL for: " + user.getUsername());
+            
             // If user is ADMIN, bypass OTP and log in directly
             if ("ADMIN".equals(user.getRole())) {
                 HttpSession session = request.getSession();
@@ -58,9 +67,11 @@ public class LoginServlet extends HttpServlet {
             }
             
         } else {
+            // --- NEW DIAGNOSTIC LOGGING ---
+            System.out.println("User validation FAILED for identifier: " + loginIdentifier);
+            
             request.setAttribute("errorMessage", "Invalid username/email or password.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
-

@@ -27,8 +27,8 @@ public class DatabaseUtil {
                 // If live credentials are found, construct the TiDB URL and use them.
                 System.out.println("Connecting to live TiDB database with SSL...");
                 
-                // --- FINAL FIX: Use the secure connection string required by TiDB Cloud ---
-                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3";
+                // --- Added serverTimezone=UTC as a best practice ---
+                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3&serverTimezone=UTC";
                 
                 connection = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
             } else {

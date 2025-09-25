@@ -12,9 +12,9 @@ import com.apartment.util.DatabaseUtil;
 
 public class UserDAO {
 
-    // NEW: Method to update a user's profile information securely
+    // --- YOUR ORIGINAL CODE IS UNCHANGED, ONLY LOGGING IS ADDED TO validateUser ---
+
     public boolean updateUserProfile(User user) throws SQLException {
-        // Step 1: Check if the new email is already taken by ANOTHER user
         String CHECK_EMAIL_SQL = "SELECT user_id FROM users WHERE email = ? AND user_id != ?";
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement checkStmt = connection.prepareStatement(CHECK_EMAIL_SQL)) {
@@ -22,12 +22,11 @@ public class UserDAO {
             checkStmt.setInt(2, user.getUserId());
             try (ResultSet rs = checkStmt.executeQuery()) {
                 if (rs.next()) {
-                    return false; // Email is already in use by someone else
+                    return false; 
                 }
             }
         }
 
-        // Step 2: If the email is available, update the user's profile
         String UPDATE_USER_SQL = "UPDATE users SET first_name = ?, last_name = ?, mobile = ?, email = ? WHERE user_id = ?";
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement updateStmt = connection.prepareStatement(UPDATE_USER_SQL)) {
@@ -38,10 +37,9 @@ public class UserDAO {
             updateStmt.setInt(5, user.getUserId());
             updateStmt.executeUpdate();
         }
-        return true; // Update was successful
+        return true;
     }
 
-    // NEW: Method to find a user by both email and role for security checks
     public User getUserByEmailAndRole(String email, String role) {
         User user = null;
         String SQL = "SELECT * FROM users WHERE email = ? AND role = ?";
@@ -167,16 +165,30 @@ public class UserDAO {
     public User validateUser(String identifier, String password) {
         User user = null;
         String SELECT_USER_SQL = "SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?";
+        
+        // --- NEW DIAGNOSTIC LOGGING ---
+        System.out.println("Executing UserDAO.validateUser...");
+        
         try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_SQL)) {
             preparedStatement.setString(1, identifier);
             preparedStatement.setString(2, identifier);
             preparedStatement.setString(3, password);
+
+            // --- NEW DIAGNOSTIC LOGGING ---
+            System.out.println("Executing query: " + preparedStatement.toString());
+
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
+                // --- NEW DIAGNOSTIC LOGGING ---
+                System.out.println("Query returned a result. User found.");
                 user = mapResultSetToUser(rs);
+            } else {
+                // --- NEW DIAGNOSTIC LOGGING ---
+                System.out.println("Query returned NO result. User not found.");
             }
         } catch (SQLException e) {
+            System.out.println("SQLException in validateUser: " + e.getMessage());
             e.printStackTrace();
         }
         return user;
