@@ -68,8 +68,10 @@ public class VisitorLogServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        // This is the logic that loads data for the page.
+        // It fetches all visitor logs for the table and all apartments for the dropdown.
         List<VisitorLog> visitorList = visitorLogDAO.getAllVisitors();
-        // This line will now work correctly once you update your ApartmentDAO
         List<Apartment> apartmentList = apartmentDAO.getAllApartments();
         
         request.setAttribute("visitorList", visitorList);
