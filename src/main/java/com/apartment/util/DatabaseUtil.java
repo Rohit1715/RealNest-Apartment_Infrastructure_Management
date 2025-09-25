@@ -25,11 +25,10 @@ public class DatabaseUtil {
 
             if (dbHost != null && dbUser != null && dbPassword != null && dbName != null) {
                 // If live credentials are found, construct the TiDB URL and use them.
-                System.out.println("Connecting to live TiDB database...");
+                System.out.println("Connecting to live TiDB database with SSL...");
                 
-                // --- MODIFIED LINE: Added useSSL=false and allowPublicKeyRetrieval=true ---
-                // This is often required for cloud database platforms when not using an SSL certificate.
-                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?useSSL=false&allowPublicKeyRetrieval=true";
+                // --- FINAL FIX: Use the secure connection string required by TiDB Cloud ---
+                String jdbcUrl = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName + "?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3";
                 
                 connection = DriverManager.getConnection(jdbcUrl, dbUser, dbPassword);
             } else {
@@ -38,9 +37,11 @@ public class DatabaseUtil {
                 connection = DriverManager.getConnection(LOCAL_JDBC_URL, LOCAL_DB_USER, LOCAL_DB_PASSWORD);
             }
         } catch (ClassNotFoundException | SQLException e) {
+            // Print the full stack trace to the server logs for detailed debugging
             e.printStackTrace();
             throw new SQLException("Failed to connect to the database.", e);
         }
         return connection;
     }
 }
+
